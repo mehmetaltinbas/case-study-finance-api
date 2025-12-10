@@ -1,0 +1,27 @@
+services:
+  dev-db:
+    image: postgres:latest
+    container_name: case-study-finance-dev-db
+    environment:
+      POSTGRES_USER: devuser
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: devdb
+    ports:
+      - "10000:5432"
+    volumes:
+      - case-study-finance-dev-db-data:/var/lib/postgresql
+
+  test-db:
+    image: postgres:latest
+    container_name: case-study-finance-db
+    environment:
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+      POSTGRES_DB: testdb
+    ports:
+      - "10010:5432"
+    tmpfs:
+      - /var/lib/postgresql
+
+volumes:
+  case-study-finance-dev-db-data:
