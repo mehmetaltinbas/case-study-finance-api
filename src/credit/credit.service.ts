@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { CreditWhereInput } from 'generated/prisma/models';
+import { FilterCompositeProvider } from 'src/credit/filter/filter-composite.provider';
+import { FilterCriteriaDomain } from 'src/credit/types/domain/filter-criteria.domain';
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';
 import { CreditStatus } from 'src/credit/types/enums/credit-status.enum';
 import { CreateCreditResponse } from 'src/credit/types/response/create-credit.response';
@@ -12,7 +15,7 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CreditService {
-    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, private installmentService: InstallmentService) {
+    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, private installmentService: InstallmentService, private filterCompositeProvider: FilterCompositeProvider) {
 
     }
 
@@ -56,11 +59,14 @@ export class CreditService {
         }
     }
 
-    async readAllByUserId(userId: number): Promise<ReadMultipleCreditsResponse> {
+    async readAllByUserId(userId: number, filterCriteriaDomain: FilterCriteriaDomain): Promise<ReadMultipleCreditsResponse> {
         const readUserByIdResponse = await this.userService.readById(userId);
         if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user) return readUserByIdResponse;
 
-        const credits = await this.prisma.credit.findMany({ where: { userId }, include: { installments: true }});
+        const creditWhereInput: CreditWhereInput = { userId };
+        const filteredCreditWhereInput = this.filterCompositeProvider.filter(filterCriteriaDomain, creditWhereInput);
+
+        const credits = await this.prisma.credit.findMany({ where: filteredCreditWhereInput, include: { installments: true }});
 
         return { isSuccess: true, message: 'all credits read filtered by given userId', credits };
     }
