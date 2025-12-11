@@ -29,7 +29,7 @@ export class UserService {
         const user = await this.prisma.user.findUnique({
             where: { id }
         });
-        if (!user) return { isSuccess: true, message: 'unsuccessfull' };
+        if (!user) return { isSuccess: false, message: 'no user found by given userId' };
 
         return { isSuccess: true, message: 'success', user };
     }

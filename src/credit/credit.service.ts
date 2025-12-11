@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';
 import { CreditStatus } from 'src/credit/types/enums/credit-status.enum';
 import { CreateCreditResponse } from 'src/credit/types/response/create-credit.response';
+import { ReadMultipleCreditsResponse } from 'src/credit/types/response/read-multiple-credits.response';
 import { InstallmentService } from 'src/installment/installment.service';
 import { InstallmentStatus } from 'src/installment/types/enums/installment-status.enum';
 import { InstallmentSummary } from 'src/installment/types/installment-summary';
@@ -53,5 +54,14 @@ export class CreditService {
         } catch (error) {
             return { isSuccess: false, message: `error: ${(error as Error).message}` };
         }
+    }
+
+    async readAllByUserId(userId: number): Promise<ReadMultipleCreditsResponse> {
+        const readUserByIdResponse = await this.userService.readById(userId);
+        if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user) return readUserByIdResponse;
+
+        const credits = await this.prisma.credit.findMany({ where: { userId }, include: { installments: true }});
+
+        return { isSuccess: true, message: 'all credits read filtered by given userId', credits };
     }
 }

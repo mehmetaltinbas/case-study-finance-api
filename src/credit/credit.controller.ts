@@ -1,7 +1,8 @@
 // eslint-disable-next-line no-redeclare
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { CreditService } from 'src/credit/credit.service';
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';
+import { ReadMultipleCreditsResponse } from 'src/credit/types/response/read-multiple-credits.response';
 import { ResponseBase } from 'src/shared/response-base';
 
 @Controller('credit')
@@ -13,5 +14,10 @@ export class CreditController {
     @Post('create')
     async create(@Body() createCreditDto: CreateCreditDto): Promise<ResponseBase> {
         return await this.creditService.create(createCreditDto);
+    }
+
+    @Get('read-all-by-user-id/:userId')
+    async readAllByUserId(@Param('userId') userId: number): Promise<ReadMultipleCreditsResponse> {
+        return await this.creditService.readAllByUserId(userId);
     }
 }
