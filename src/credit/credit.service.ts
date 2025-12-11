@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreditWhereInput } from 'generated/prisma/models';
 import { FilterCompositeProvider } from 'src/credit/filter/filter-composite.provider';
@@ -15,7 +15,7 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CreditService {
-    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, private installmentService: InstallmentService, private filterCompositeProvider: FilterCompositeProvider) {
+    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, @Inject(forwardRef(() => InstallmentService)) private installmentService: InstallmentService, private filterCompositeProvider: FilterCompositeProvider) {
 
     }
 
@@ -69,5 +69,19 @@ export class CreditService {
         const credits = await this.prisma.credit.findMany({ where: filteredCreditWhereInput, include: { installments: true }});
 
         return { isSuccess: true, message: 'all credits read filtered by given userId', credits };
+    }
+
+    async checkCreditPaid(id: number): Promise<void> {
+        const credit = await this.prisma.credit.findUnique({ where: { id }, include: { installments: true }});
+        if (credit) {
+            let isAllPaid = true;
+            credit.installments.forEach((installment) => {
+                if (installment.status !== Number(InstallmentStatus.PAID)) isAllPaid = false;
+            });
+            if (isAllPaid) {
+                await this.prisma.credit.update({ where: { id }, data: { status: CreditStatus.PAID }});
+                console.log("credit paid fully");
+            }
+        }
     }
 }

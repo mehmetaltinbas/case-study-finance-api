@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Decimal } from '@prisma/client/runtime/library';
+import { CreditService } from 'src/credit/credit.service';
 import { CreateInstallmentDto } from 'src/installment/types/dto/create-installment.dto';
 import { PayInstallmentDto } from 'src/installment/types/dto/pay-installment.dto';
 import { InstallmentStatus } from 'src/installment/types/enums/installment-status.enum';
@@ -10,9 +11,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class InstallmentService {
-    constructor(private configService: ConfigService, private prisma: PrismaService) {
-
-    }
+    constructor(private configService: ConfigService, private prisma: PrismaService, @Inject(forwardRef(() => CreditService)) private creditService: CreditService) {}
 
     async create(createInstallmentDto: CreateInstallmentDto): Promise<CreateInstallmentResponse>  {
         const installment = await this.prisma.installment.create({
@@ -40,7 +39,9 @@ export class InstallmentService {
         if (!updatedInstallment) return { isSuccess: false, message: 'unsuccessfull installment pay' };
 
         if (status === InstallmentStatus.PAID) {
-            const refund = paidAmount.toNumber() - installment.amount.toNumber();
+            const refundRaw = paidAmount.toNumber() - installment.amount.toNumber();
+            const refund = Math.round(refundRaw * 100) / 100;
+            void this.creditService.checkCreditPaid(updatedInstallment.creditId);
             return { isSuccess: true, message: 'installment fully paid', refund };
         }
         return { isSuccess: true, message: 'installment partially paid' };
