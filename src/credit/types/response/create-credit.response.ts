@@ -2,6 +2,6 @@ import { InstallmentSummary } from "src/installment/types/installment-summary";
 import { ResponseBase } from "src/shared/response-base";
 
 export interface CreateCreditResponse extends ResponseBase {
-    creditId?: string;
+    creditId?: number;
     installments?: InstallmentSummary[];
 }
