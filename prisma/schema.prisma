@@ -43,6 +43,7 @@ model Installment {
     creditId Int
     status Int
     amount Decimal @db.Decimal(10, 2)
+    paidAmount Decimal @db.Decimal(10, 2) @default(0)
     dueDate DateTime
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
