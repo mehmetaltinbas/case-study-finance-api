@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import bcrypt from 'bcrypt';
 import { SignUpDto } from 'src/auth/types/dto/sign-up.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ResponseBase } from 'src/shared/response-base';
@@ -12,7 +13,16 @@ export class UserService {
     }
 
     async create(signUpDto: SignUpDto): Promise<ResponseBase> {
-        
+        const { password, ...restOfSignUpUserDto } = signUpDto;
+        const passwordHash = await bcrypt.hash(password, 10);
+        const user = await this.prisma.user.create({
+            data: {
+                passwordHash,
+                ...restOfSignUpUserDto,
+            }
+        });
+        if (!user) return { isSuccess: false, message: "user couldn't created" };
+        return { isSuccess: true, message: 'user created' };
     }
 
     async readById(id: number): Promise<ReadSingleUserResponse> {
@@ -22,5 +32,16 @@ export class UserService {
         if (!user) return { isSuccess: true, message: 'unsuccessfull' };
 
         return { isSuccess: true, message: 'success', user };
+    }
+
+    async readByUserName(userName: string): Promise<ReadSingleUserResponse> {
+        const user = await this.prisma.user.findFirst({ where: { userName }});
+        if (!user) {
+            return {
+                isSuccess: false,
+                message: `user couldn't read with userName: ${userName}`,
+            };
+        }
+        return { isSuccess: true, message: `user read with userName: ${userName}`, user };
     }
 }

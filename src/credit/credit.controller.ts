@@ -10,8 +10,8 @@ export class CreditController {
 
     }
 
-    @Post('create')
-    async create(@Body() createCreditDto: CreateCreditDto): Promise<ResponseBase> {
-        return await this.creditService.create(createCreditDto);
-    }
+    // @Post('create')
+    // async create(@Body() createCreditDto: CreateCreditDto): Promise<ResponseBase> {
+    //     return await this.creditService.create(createCreditDto);
+    // }
 }
