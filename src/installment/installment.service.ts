@@ -14,8 +14,16 @@ export class InstallmentService {
     constructor(private configService: ConfigService, private prisma: PrismaService, @Inject(forwardRef(() => CreditService)) private creditService: CreditService) {}
 
     async create(createInstallmentDto: CreateInstallmentDto): Promise<CreateInstallmentResponse>  {
+        const { dueDate, ...restOfDto } = createInstallmentDto;
+        
+        if (dueDate.getDay() === 6) {
+            dueDate.setDate(dueDate.getDate() + 2);
+        } else if (dueDate.getDay() === 0) {
+            dueDate.setDate(dueDate.getDate() + 1);
+        }
+
         const installment = await this.prisma.installment.create({
-            data: createInstallmentDto
+            data: { ...restOfDto, dueDate }
         });
         if (!installment) return { isSuccess: false, message: "installment couldn't created" };
 
