@@ -1,5 +1,6 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { Decimal } from '@prisma/client/runtime/library';
 import { CreditService } from 'src/credit/credit.service';
 import { CreateInstallmentDto } from 'src/installment/types/dto/create-installment.dto';
@@ -13,9 +14,45 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class InstallmentService {
     constructor(private configService: ConfigService, private prisma: PrismaService, @Inject(forwardRef(() => CreditService)) private creditService: CreditService) {}
 
+    @Cron(CronExpression.EVERY_DAY_AT_9AM)
+    private async checkForLate(): Promise<void> {
+        console.log("checking for late installments...");
+        // newly late installments
+        const lateInstallments = await this.prisma.installment.findMany({
+            where: {
+                dueDate: { lt: new Date() },
+                status: { in: [InstallmentStatus.PENDING, InstallmentStatus.LATE] }
+            }
+        });
+        if (lateInstallments.length === 0) return;
+
+        for (const lateInstallment of lateInstallments) {
+            console.log("\n");
+            console.log(`late fee calculation for late installment with id: ${lateInstallment.id}`);
+            const associatedCredit = await this.creditService.readById(lateInstallment.creditId);
+            if (!associatedCredit.isSuccess || !associatedCredit.credit) /* what happens if associatedCredit not found but there is a lateInstallment? */ {
+                continue;
+            };
+
+            const lateDays: number = Math.floor((new Date().getTime() - lateInstallment.dueDate.getTime()) / (24 * 60 * 60 * 1000));
+            console.log(`late days: ${lateDays}`);
+            const lateFee = (lateDays * ((associatedCredit.credit.interestRate as Decimal).toNumber() / 100) * lateInstallment.amount.toNumber()) / 360;
+            console.log(`interest rate: ${associatedCredit.credit.interestRate}`);
+            console.log(`late fee: ${lateFee}`);
+            const updatedLateInstallment = await this.prisma.installment.update({
+                where: { id: lateInstallment.id },
+                data: { 
+                    status: InstallmentStatus.LATE, 
+                    lateFee,
+                }
+            });
+        }
+    }
+
     async create(createInstallmentDto: CreateInstallmentDto): Promise<CreateInstallmentResponse>  {
         const { dueDate, ...restOfDto } = createInstallmentDto;
         
+        // dueDate can't be at weekends
         if (dueDate.getDay() === 6) {
             dueDate.setDate(dueDate.getDate() + 2);
         } else if (dueDate.getDay() === 0) {
@@ -35,19 +72,20 @@ export class InstallmentService {
     }
 
     async pay(payInstallmentDto: PayInstallmentDto): Promise<PayInstallmentResponse> {
-        const installment = await this.prisma.installment.findUnique({ where: { id: payInstallmentDto.id, status: InstallmentStatus.PENDING }});
+        const installment = await this.prisma.installment.findUnique({ where: { id: payInstallmentDto.id, status: { in: [InstallmentStatus.PENDING, InstallmentStatus.LATE] } }});
         if (!installment) return { isSuccess: false, message: 'no installment found by given id' };
+        const amountNeedsToBePaid = installment.amount.plus(installment.lateFee as Decimal);
 
         const paidAmount = (installment.paidAmount as Decimal).plus(new Decimal(payInstallmentDto.amountToPay));
-        const status = paidAmount >= installment.amount ? InstallmentStatus.PAID : InstallmentStatus.PENDING;
+        const status = paidAmount >= amountNeedsToBePaid ? InstallmentStatus.PAID : InstallmentStatus.PENDING;
         const updatedInstallment = await this.prisma.installment.update({
             where: { id: installment.id },
-            data: { status, paidAmount: paidAmount.toNumber() > installment.amount.toNumber() ? installment.amount : paidAmount }
+            data: { status, paidAmount: paidAmount.toNumber() > amountNeedsToBePaid.toNumber() ? amountNeedsToBePaid : paidAmount }
         });
         if (!updatedInstallment) return { isSuccess: false, message: 'unsuccessfull installment pay' };
 
         if (status === InstallmentStatus.PAID) {
-            const refundRaw = paidAmount.toNumber() - installment.amount.toNumber();
+            const refundRaw = paidAmount.toNumber() - amountNeedsToBePaid.toNumber();
             const refund = Math.round(refundRaw * 100) / 100;
             void this.creditService.checkCreditPaid(updatedInstallment.creditId);
             return { isSuccess: true, message: 'installment fully paid', refund };

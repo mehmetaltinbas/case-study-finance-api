@@ -9,4 +9,7 @@ export class CreateCreditDto {
 
     @IsNotEmpty()
     readonly installmentCount!: number;
+
+    @IsNotEmpty()
+    readonly interestRate!: number;
 }

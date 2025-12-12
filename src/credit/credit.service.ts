@@ -10,6 +10,7 @@ import { ReadMultipleCreditsResponse } from 'src/credit/types/response/read-mult
 import { InstallmentService } from 'src/installment/installment.service';
 import { InstallmentStatus } from 'src/installment/types/enums/installment-status.enum';
 import { InstallmentSummary } from 'src/installment/types/installment-summary';
+import { ReadSingleCreditResponse } from 'src/installment/types/response/read-single-credit.response';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 
@@ -30,6 +31,7 @@ export class CreditService {
                         userId: createCreditDto.userId,
                         status: CreditStatus.ACTIVE,
                         amount: createCreditDto.amount,
+                        interestRate: createCreditDto.interestRate,
                     }
                 });
                 if (!credit) throw new Error("credit couldn't created");
@@ -57,6 +59,13 @@ export class CreditService {
         } catch (error) {
             return { isSuccess: false, message: `error: ${(error as Error).message}` };
         }
+    }
+
+    async readById(id: number): Promise<ReadSingleCreditResponse> {
+        const credit = await this.prisma.credit.findUnique({ where: { id }});
+        if (!credit) return { isSuccess: false, message: `no credit found by given id: ${id}` };
+
+        return { isSuccess: true, message: `credit found by given id: ${id}`, credit };
     }
 
     async readAllByUserId(userId: number, filterCriteriaDomain: FilterCriteriaDomain): Promise<ReadMultipleCreditsResponse> {
