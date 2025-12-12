@@ -22,14 +22,16 @@ export class AuthService {
         }
         const isMatch = await bcrypt.compare(
             signInDto.password,
-            readSingleUserResponse.user.passwordHash as string
+            readSingleUserResponse.user.passwordHash
         );
         if (!isMatch) {
             return { isSuccess: false, message: 'password is incorrect' };
         }
+
         const payload: JwtPayload = {
             sub: readSingleUserResponse.user.id,
-            userName: readSingleUserResponse.user.userName as string,
+            userName: readSingleUserResponse.user.userName,
+            role: readSingleUserResponse.user.role
         };
         const jwt = await this.jwtService.signAsync(payload);
         return {

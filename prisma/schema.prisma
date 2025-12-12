@@ -15,12 +15,18 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum Role {
+    admin
+    customer
+}
+
 model User {
     id Int @id @default(autoincrement())
+    role Role @default(customer)
     userName String @unique 
     passwordHash String
-    firstName String
-    lastName String
+    firstName String?
+    lastName String?
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     credits Credit[]

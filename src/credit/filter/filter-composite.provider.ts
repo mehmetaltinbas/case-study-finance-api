@@ -14,8 +14,8 @@ export class FilterCompositeProvider implements Filter {
     }
 
     filter(filterCriteriaDomain: FilterCriteriaDomain, creditWhereInput: CreditWhereInput): CreditWhereInput {
-        for (const leave of this.children) {
-            creditWhereInput = leave.filter(filterCriteriaDomain, creditWhereInput);
+        for (const child of this.children) {
+            creditWhereInput = child.filter(filterCriteriaDomain, creditWhereInput);
         }
         return creditWhereInput;
     }

@@ -3,7 +3,5 @@ import { UserService } from 'src/user/user.service';
 
 @Controller('user')
 export class UserController {
-    constructor(private userService: UserService) {
-
-    }
+    constructor(private userService: UserService) {}
 }

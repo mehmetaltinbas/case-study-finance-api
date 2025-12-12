@@ -8,7 +8,7 @@ export class StatusFilterProvider implements Filter {
     constructor() {}
 
     filter(filterCriteriaDomain: FilterCriteriaDomain, creditWhereInput: CreditWhereInput): CreditWhereInput {
-        if (filterCriteriaDomain.status) creditWhereInput.status = filterCriteriaDomain.status;
+        if (filterCriteriaDomain.status !== undefined) creditWhereInput.status = filterCriteriaDomain.status;
         return creditWhereInput;
     }
 }
