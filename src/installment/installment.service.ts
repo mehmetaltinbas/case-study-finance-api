@@ -2,6 +2,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Decimal } from '@prisma/client/runtime/library';
+import { Prisma } from 'generated/prisma/browser';
 import { CreditService } from 'src/credit/credit.service';
 import { CreateInstallmentDto } from 'src/installment/types/dto/create-installment.dto';
 import { PayInstallmentDto } from 'src/installment/types/dto/pay-installment.dto';
@@ -49,7 +50,7 @@ export class InstallmentService {
         }
     }
 
-    async create(createInstallmentDto: CreateInstallmentDto): Promise<CreateInstallmentResponse>  {
+    async create(createInstallmentDto: CreateInstallmentDto, tx?: Prisma.TransactionClient): Promise<CreateInstallmentResponse>  {
         const { dueDate, ...restOfDto } = createInstallmentDto;
         
         // dueDate can't be at weekends
@@ -59,7 +60,9 @@ export class InstallmentService {
             dueDate.setDate(dueDate.getDate() + 1);
         }
 
-        const installment = await this.prisma.installment.create({
+        const prismaClient = tx ?? this.prisma;
+
+        const installment = await prismaClient.installment.create({
             data: { ...restOfDto, dueDate }
         });
         if (!installment) return { isSuccess: false, message: "installment couldn't created" };

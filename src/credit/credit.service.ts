@@ -26,7 +26,7 @@ export class CreditService {
 
         try {
             return await this.prisma.$transaction(async (tx) => {
-                const credit = await this.prisma.credit.create({
+                const credit = await tx.credit.create({
                     data: {
                         userId: createCreditDto.userId,
                         status: CreditStatus.ACTIVE,
@@ -45,7 +45,7 @@ export class CreditService {
                         status: InstallmentStatus.PENDING,
                         amount: createCreditDto.amount/createCreditDto.installmentCount,
                         dueDate
-                    }));
+                    }, tx));
                 }
                 const createInstallmentResponses = await Promise.all(installmentCreations);
 

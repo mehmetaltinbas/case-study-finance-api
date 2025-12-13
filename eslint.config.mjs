@@ -52,6 +52,7 @@ export default tseslint.config(
             '@typescript-eslint/no-inferrable-types': 'warn', // warn on redundant type annotations
             "@typescript-eslint/no-unsafe-member-access": "error",
             "@typescript-eslint/no-unsafe-argument": "error",
+            "@typescript-eslint/no-unnecessary-type-assertion": "warn"
         },
     },
 );
