@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-redeclare
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { Role } from 'generated/prisma/enums';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -14,6 +15,9 @@ export class InstallmentController {
 
     @Post('pay')
     @Roles([Role.customer])
+    @ApiOperation({
+        description: 'Allowed role(s): customer',
+    })
     async pay(@Body() payInstallmentDto: PayInstallmentDto): Promise<ResponseBase> {
         return await this.installmentService.pay(payInstallmentDto);
     }

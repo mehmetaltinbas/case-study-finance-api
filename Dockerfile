@@ -13,6 +13,8 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
+RUN npm run db:prisma:dev:generate --binary-targets native linux-arm64-openssl-3.0.x
+
 # Build the NestJS application
 RUN npm run build
 

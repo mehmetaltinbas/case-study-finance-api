@@ -1,5 +1,6 @@
 // eslint-disable-next-line no-redeclare
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import { ApiOperation } from '@nestjs/swagger';
 import { Role } from 'generated/prisma/enums';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
@@ -17,14 +18,21 @@ import { ResponseBase } from 'src/shared/response-base';
 export class CreditController {
     constructor(private creditService: CreditService) {}
 
+
     @Post('create')
     @Roles([Role.admin])
+    @ApiOperation({
+        description: 'Allowed role(s): admin',
+    })
     async create(@Body() createCreditDto: CreateCreditDto): Promise<ResponseBase> {
         return await this.creditService.create(createCreditDto);
     }
 
     @Get('read-all-by-user-id')
     @Roles([Role.customer])
+    @ApiOperation({
+        description: 'Allowed role(s): customer',
+    })
     async readAllByUserIdForCustomer(@User() user: JwtPayload, @Query() readMultipleCreditsFilterCriteriaDto: ReadMultipleCreditsFilterCriteriaDto): Promise<ReadMultipleCreditsResponse> {
         console.log(readMultipleCreditsFilterCriteriaDto);
         const filterCriteriaDomain: FilterCriteriaDomain = {
@@ -36,6 +44,9 @@ export class CreditController {
 
     @Get('read-all-by-user-id/:userId')
     @Roles([Role.admin])
+    @ApiOperation({
+        description: 'Allowed role(s): admin',
+    })
     async readAllByUserIdForAdmin(@Param('userId') userId: number, @Query() readMultipleCreditsFilterCriteriaDto: ReadMultipleCreditsFilterCriteriaDto): Promise<ReadMultipleCreditsResponse> {
         const filterCriteriaDomain: FilterCriteriaDomain = {
             status: readMultipleCreditsFilterCriteriaDto.status,

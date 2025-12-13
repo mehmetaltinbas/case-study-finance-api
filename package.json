@@ -28,8 +28,8 @@
         "db:prisma:dev:generate": "dotenv -e .dev.local.env -- npx prisma generate",
         "db:prisma:test:push": "dotenv -e .test.local.env -- npx prisma db push",
         "db:prisma:test:generate": "dotenv -e .test.local.env -- npx prisma generate",
-        "docker:build": "docker build --no-cache -t my-nestjs-app .",
-        "docker:run": "docker run --env-file .dev.local.env -p 5010:5010 my-nestjs-app",
+        "docker:build": "docker build --platform linux/amd64 -t altnbsmehmet/case-study-finance-api .",
+        "docker:push": "docker push altnbsmehmet/case-study-finance-api:latest",
         "app:up": "docker-compose up -d --build app",
         "app:down": "docker-compose down app"
     },
@@ -40,6 +40,7 @@
         "@nestjs/jwt": "^11.0.2",
         "@nestjs/platform-express": "^11.0.1",
         "@nestjs/schedule": "^6.1.0",
+        "@nestjs/swagger": "^11.2.3",
         "@prisma/adapter-pg": "^7.1.0",
         "@prisma/client": "^6.19.0",
         "bcrypt": "^6.0.0",

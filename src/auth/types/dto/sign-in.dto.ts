@@ -1,4 +1,4 @@
-import { IS_ALPHA, IsNotEmpty } from "class-validator";
+import { IsNotEmpty } from "class-validator";
 
 export class SignInDto {
     @IsNotEmpty()

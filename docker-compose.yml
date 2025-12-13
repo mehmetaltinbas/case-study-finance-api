@@ -1,6 +1,7 @@
 services:
   app:
-    build: .
+    # build: .
+    image: altnbsmehmet/case-study-finance-api:latest
     env_file:
       - .dev.docker.env
     ports:
