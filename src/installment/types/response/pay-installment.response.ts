@@ -1,4 +1,4 @@
-import { ResponseBase } from "src/shared/response-base";
+import { ResponseBase } from "src/shared/types/response-base";
 
 export interface PayInstallmentResponse extends ResponseBase {
     refund?: number;

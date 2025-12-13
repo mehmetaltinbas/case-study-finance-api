@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcrypt';
 import { SignUpDto } from 'src/auth/types/dto/sign-up.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ResponseBase } from 'src/shared/response-base';
+import { ResponseBase } from 'src/shared/types/response-base';
 import { ReadSingleUserResponse } from 'src/user/types/response/read-single-user.response';
 
 @Injectable()

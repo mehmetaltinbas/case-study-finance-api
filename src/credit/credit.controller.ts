@@ -11,7 +11,7 @@ import { FilterCriteriaDomain } from 'src/credit/types/domain/filter-criteria.do
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';
 import { ReadMultipleCreditsFilterCriteriaDto } from 'src/credit/types/dto/read-multiple-credits-filter-criteria.dto';
 import { ReadMultipleCreditsResponse } from 'src/credit/types/response/read-multiple-credits.response';
-import { ResponseBase } from 'src/shared/response-base';
+import { ResponseBase } from 'src/shared/types/response-base';
 
 @Controller('credit')
 @UseGuards(RolesGuard)

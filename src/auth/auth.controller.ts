@@ -1,12 +1,11 @@
 // eslint-disable-next-line no-redeclare
 import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ApiOperation } from '@nestjs/swagger';
 import { Response as ExpressResponse } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { SignInDto } from 'src/auth/types/dto/sign-in.dto';
 import { SignUpDto } from 'src/auth/types/dto/sign-up.dto';
-import { ResponseBase } from 'src/shared/response-base';
+import { ResponseBase } from 'src/shared/types/response-base';
 import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
