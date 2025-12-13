@@ -3,7 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request as ExpressRequest } from "express";
-import { Roles } from "src/auth/roles.decorator";
+import { Roles } from "src/auth/decorators/roles.decorator";
 import { JwtPayload } from "src/auth/types/jwt-payload";
 
 @Injectable()

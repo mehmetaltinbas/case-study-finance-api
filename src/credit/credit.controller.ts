@@ -2,10 +2,10 @@
 import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { Role } from 'generated/prisma/enums';
-import { Roles } from 'src/auth/roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import User from 'src/auth/decorators/user.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { JwtPayload } from 'src/auth/types/jwt-payload';
-import User from 'src/auth/user.decorator';
 import { CreditService } from 'src/credit/credit.service';
 import { FilterCriteriaDomain } from 'src/credit/types/domain/filter-criteria.domain';
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';

@@ -2,8 +2,8 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { Role } from 'generated/prisma/enums';
-import { Roles } from 'src/auth/roles.decorator';
-import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 import { InstallmentService } from 'src/installment/installment.service';
 import { PayInstallmentDto } from 'src/installment/types/dto/pay-installment.dto';
 import { ResponseBase } from 'src/shared/response-base';
