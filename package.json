@@ -27,7 +27,11 @@
         "db:prisma:dev:push": "dotenv -e .dev.local.env -- npx prisma db push",
         "db:prisma:dev:generate": "dotenv -e .dev.local.env -- npx prisma generate",
         "db:prisma:test:push": "dotenv -e .test.local.env -- npx prisma db push",
-        "db:prisma:test:generate": "dotenv -e .test.local.env -- npx prisma generate"
+        "db:prisma:test:generate": "dotenv -e .test.local.env -- npx prisma generate",
+        "docker:build": "docker build --no-cache -t my-nestjs-app .",
+        "docker:run": "docker run --env-file .dev.local.env -p 5010:5010 my-nestjs-app",
+        "app:up": "docker-compose up -d --build app",
+        "app:down": "docker-compose down app"
     },
     "dependencies": {
         "@nestjs/common": "^11.0.1",

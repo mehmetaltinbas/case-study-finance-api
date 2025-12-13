@@ -14,7 +14,6 @@ export class AuthController {
 
     @Post('sign-up')
     async signUp(@Body() signUpDto: SignUpDto): Promise<ResponseBase> {
-        console.log(signUpDto);
         return await this.userService.create(signUpDto);
     }
 

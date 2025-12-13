@@ -1,4 +1,10 @@
 services:
+  app:
+    build: .
+    env_file:
+      - .dev.docker.env
+    ports:
+      - "5010:5010"
   dev-db:
     image: postgres:latest
     container_name: case-study-finance-dev-db
