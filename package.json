@@ -8,7 +8,7 @@
     "scripts": {
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-        "start": " dotenv -e .dev.local.env -- nest start",
+        "start": "npx prisma generate && nest start",
         "start:dev": "dotenv -e .dev.local.env -- nest start --watch",
         "start:debug": "dotenv -e .dev.local.env -- nest start --debug --watch",
         "start:prod": "node dist/main",

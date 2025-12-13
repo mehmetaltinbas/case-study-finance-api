@@ -13,13 +13,6 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
-RUN echo "Checking prisma folder"
-RUN ls
-RUN echo "Checking schema"
-RUN ls prisma
-
-RUN npx prisma generate
-
 # Build the NestJS application
 RUN npm run build
 
