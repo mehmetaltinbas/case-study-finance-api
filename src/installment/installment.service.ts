@@ -74,13 +74,18 @@ export class InstallmentService {
         } };
     }
 
-    async pay(payInstallmentDto: PayInstallmentDto): Promise<PayInstallmentResponse> {
-        const installment = await this.prisma.installment.findUnique({ where: { id: payInstallmentDto.id, status: { in: [InstallmentStatus.PENDING, InstallmentStatus.LATE] } }});
-        if (!installment) return { isSuccess: false, message: 'no installment found by given id' };
-        const amountNeedsToBePaid = installment.amount.plus(installment.lateFee);
+    async pay(userId: number, payInstallmentDto: PayInstallmentDto): Promise<PayInstallmentResponse> {
+        const installment = await this.prisma.installment.findFirst({ where: { id: payInstallmentDto.id, status: { in: [InstallmentStatus.PENDING, InstallmentStatus.LATE] } }});
+        if (!installment) return { isSuccess: false, message: 'no pending or late installment found by given id' };
 
+        const readSingleCreditResponse = await this.creditService.readByIdAndUserId(installment.creditId, userId);
+        if (!readSingleCreditResponse.isSuccess || !readSingleCreditResponse.credit) return readSingleCreditResponse;
+
+        const amountNeedsToBePaid = installment.amount.plus(installment.lateFee);
         const paidAmount = (installment.paidAmount).plus(new Decimal(payInstallmentDto.amount));
+
         const status = paidAmount >= amountNeedsToBePaid ? InstallmentStatus.PAID : installment.status;
+
         const updatedInstallment = await this.prisma.installment.update({
             where: { id: installment.id },
             data: { status, paidAmount: paidAmount.toNumber() > amountNeedsToBePaid.toNumber() ? amountNeedsToBePaid : paidAmount }

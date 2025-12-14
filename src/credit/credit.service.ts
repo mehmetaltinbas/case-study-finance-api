@@ -66,6 +66,13 @@ export class CreditService {
         return { isSuccess: true, message: `credit found by given id: ${id}`, credit };
     }
 
+    async readByIdAndUserId(id: number, userId: number): Promise<ReadSingleCreditResponse> {
+        const credit = await this.prisma.credit.findUnique({ where: { id, userId }});
+        if (!credit) return { isSuccess: false, message: `no credit found by given id: ${id} and given userId: ${userId}` };
+
+        return { isSuccess: true, message: `credit found by given id: ${id} and given userId: ${userId}`, credit };
+    }
+
     async readAllByUserId(userId: number, filterCriteriaDomain: FilterCriteriaDomain): Promise<ReadMultipleCreditsResponse> {
         const readUserByIdResponse = await this.userService.readById(userId);
         if (!readUserByIdResponse.isSuccess || !readUserByIdResponse.user) return readUserByIdResponse;
