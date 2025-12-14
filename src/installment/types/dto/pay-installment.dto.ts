@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsNotEmpty, IsNumber } from "class-validator";
 
 export class PayInstallmentDto {
     @IsNotEmpty()
@@ -7,5 +7,5 @@ export class PayInstallmentDto {
 
     @IsNotEmpty()
     @IsNumber({ maxDecimalPlaces: 2 })
-    readonly amountToPay!: number;
+    readonly amount!: number;
 }

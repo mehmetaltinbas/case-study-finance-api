@@ -18,7 +18,6 @@ import { ResponseBase } from 'src/shared/types/response-base';
 export class CreditController {
     constructor(private creditService: CreditService) {}
 
-
     @Post('create')
     @Roles([Role.admin])
     @ApiOperation({

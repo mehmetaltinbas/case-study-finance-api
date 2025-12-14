@@ -1,9 +1,10 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { CreditService } from './credit.service';
-import { CreditController } from './credit.controller';
+import { filterProviders } from 'src/credit/filters/filter-providers';
 import { InstallmentModule } from 'src/installment/installment.module';
 import { UserModule } from 'src/user/user.module';
-import { filterProviders } from 'src/credit/filter/filter-providers';
+import { CreditController } from './credit.controller';
+import { CreditService } from './credit.service';
+
 
 @Module({
     imports: [UserModule, forwardRef(() => InstallmentModule)],

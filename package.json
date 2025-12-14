@@ -30,6 +30,7 @@
         "db:prisma:test:generate": "dotenv -e .test.local.env -- npx prisma generate",
         "docker:build": "docker build --platform linux/amd64 -t altnbsmehmet/case-study-finance-api .",
         "docker:push": "docker push altnbsmehmet/case-study-finance-api:latest",
+        "docker:build&push": "npm run docker:build && npm run docker:push",
         "app:up": "docker-compose up -d --build app",
         "app:down": "docker-compose down app"
     },

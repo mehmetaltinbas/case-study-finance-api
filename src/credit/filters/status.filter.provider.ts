@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CreditWhereInput } from "generated/prisma/models";
-import { Filter } from "src/credit/filter/filter";
+import { Filter } from "src/credit/filters/filter.interface";
 import { FilterCriteriaDomain } from "src/credit/types/domain/filter-criteria.domain";
 
 @Injectable()

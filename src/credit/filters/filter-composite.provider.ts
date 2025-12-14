@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { CreditWhereInput } from "generated/prisma/models";
-import { CreatedAtFilterProvider } from "src/credit/filter/created-at-filter.provider";
-import { Filter } from "src/credit/filter/filter";
-import { StatusFilterProvider } from "src/credit/filter/status-filter.provider";
+import { CreatedAtFilterProvider } from "src/credit/filters/created-at.filter.provider";
+import { Filter } from "src/credit/filters/filter.interface";
+import { StatusFilterProvider } from "src/credit/filters/status.filter.provider";
 import { FilterCriteriaDomain } from "src/credit/types/domain/filter-criteria.domain";
 
 @Injectable()

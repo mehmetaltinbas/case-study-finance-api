@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CreditWhereInput } from 'generated/prisma/models';
-import { FilterCompositeProvider } from 'src/credit/filter/filter-composite.provider';
+import { FilterCompositeProvider } from 'src/credit/filters/filter-composite.provider';
 import { FilterCriteriaDomain } from 'src/credit/types/domain/filter-criteria.domain';
 import { CreateCreditDto } from 'src/credit/types/dto/create-credit.dto';
 import { CreditStatus } from 'src/credit/types/enums/credit-status.enum';
@@ -16,9 +16,7 @@ import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class CreditService {
-    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, @Inject(forwardRef(() => InstallmentService)) private installmentService: InstallmentService, private filterCompositeProvider: FilterCompositeProvider) {
-
-    }
+    constructor(private configService: ConfigService, private prisma: PrismaService, private userService: UserService, @Inject(forwardRef(() => InstallmentService)) private installmentService: InstallmentService, private filterCompositeProvider: FilterCompositeProvider) {}
 
     async create(createCreditDto: CreateCreditDto): Promise<CreateCreditResponse> {
         const readUserResponse = await this.userService.readById(createCreditDto.userId);
