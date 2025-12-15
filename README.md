@@ -1,6 +1,5 @@
 .env variables:
-DATABASE_URL=postgresql://devuser:devpass@dev-db:5432/devdb
-
-JWT_COOKIE_NAME=jwt
-JWT_SECRET=adjust-the-sails
-JWT_EXPIRES_IN=3600
+DATABASE_URL
+JWT_COOKIE_NAME
+JWT_SECRET
+JWT_EXPIRES_IN
