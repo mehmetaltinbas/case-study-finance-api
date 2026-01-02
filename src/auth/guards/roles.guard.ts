@@ -33,8 +33,6 @@ export class RolesGuard implements CanActivate {
         }
 
         const allowedRoles = this.reflector.get(Roles, context.getHandler());
-        console.log("allowed roles: ", allowedRoles);
-        console.log("user's role: ", jwtPayload.role);
         if (!allowedRoles) {
             return true;
         }

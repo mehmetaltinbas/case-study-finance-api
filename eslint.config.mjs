@@ -28,7 +28,7 @@ export default tseslint.config(
         rules: {
             eqeqeq: 'error', // enforce === instead of ==
             'no-console': 'warn', // warn on console.log usage
-            'no-debugger': 'error', // disallow debugger statements
+            'no-debugger': 'warn', // disallow debugger statements
             'no-unused-vars': 'off', // disable JS version; use TS version instead
             curly: 'off', // require braces for all control statements
             'no-undef': 'error', // disallow use of undeclared variables

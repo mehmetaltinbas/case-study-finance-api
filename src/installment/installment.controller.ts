@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-redeclare
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import { Role } from 'generated/prisma/enums';
 import { Roles } from 'src/auth/decorators/roles.decorator';
@@ -22,5 +22,10 @@ export class InstallmentController {
     })
     async pay(@User() user: JwtPayload, @Body() payInstallmentDto: PayInstallmentDto): Promise<ResponseBase> {
         return await this.installmentService.pay(user.sub, payInstallmentDto);
+    }
+
+    @Get('test')
+    async test(): Promise<string> {
+        return 'tested';
     }
 }

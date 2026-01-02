@@ -84,7 +84,7 @@ export class InstallmentService {
         const amountNeedsToBePaid = installment.amount.plus(installment.lateFee);
         const paidAmount = (installment.paidAmount).plus(new Decimal(payInstallmentDto.amount));
 
-        const status = paidAmount >= amountNeedsToBePaid ? InstallmentStatus.PAID : installment.status;
+        const status = paidAmount.gte(amountNeedsToBePaid) ? InstallmentStatus.PAID : installment.status;
 
         const updatedInstallment = await this.prisma.installment.update({
             where: { id: installment.id },
